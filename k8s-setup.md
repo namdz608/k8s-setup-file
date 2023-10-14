@@ -39,8 +39,14 @@ EOF
 
  sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
 
- sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu (lsb_release -cs) stable"
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
  sudo apt update
  sudo apt install -y containerd.io
@@ -64,7 +70,7 @@ sudo kubeadm init --control-plane-endpoint=k8smaster.example.net
 
 mkdir -p HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf HOME/.kube/config
-sudo chown (id -u):(id -g) HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 // tạo lại token thì làm lại 3 bước trên
 
 sudo kubeadm token create --print-join-command
