@@ -76,5 +76,26 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 sudo kubeadm token create --print-join-command
 //copy sang worker
 
+//Test Cluster
+$ kubectl cluster-info
+$ kubectl get nodes
 
+![Alt text](https://www.linuxtechi.com/wp-content/uploads/2022/07/Node-Status-K8s-Before-CNI-768x137.png?ezimgfmt=ngcb22/notWebP)
 
+kubectl get nodes
+
+![Alt text](image-1.png)
+
+//Install Calico Network Plugin
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+
+![Alt text](image-2.png)
+
+kubectl get pods -n kube-system
+
+![Alt text](image-3.png)
+
+kubectl get nodes
+
+![Alt text](image-4.png)
