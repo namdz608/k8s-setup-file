@@ -80,7 +80,7 @@ sudo kubeadm token create --print-join-command
 $ kubectl cluster-info
 $ kubectl get nodes
 
-![Alt text](https://www.linuxtechi.com/wp-content/uploads/2022/07/Node-Status-K8s-Before-CNI-768x137.png?ezimgfmt=ngcb22/notWebP)
+![Alt text](image.png)
 
 kubectl get nodes
 
