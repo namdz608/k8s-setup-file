@@ -1,3 +1,5 @@
+## _Setup K8s (1 master- 1 worker)_
+
 ## resource
 - Master Node:  192.168.1.173 – k8smaster.example.net
 - First Worker Node:  192.168.1.174 – k8sworker1.example.net
