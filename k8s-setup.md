@@ -1,7 +1,7 @@
 ## resource
-Master Node:  192.168.1.173 – k8smaster.example.net
-First Worker Node:  192.168.1.174 – k8sworker1.example.net
-Second Worker Node:  192.168.1.175 – k8sworker2.example.net
+- Master Node:  192.168.1.173 – k8smaster.example.net
+- First Worker Node:  192.168.1.174 – k8sworker1.example.net
+- Second Worker Node:  192.168.1.175 – k8sworker2.example.net
 
 ## master node
  ```
