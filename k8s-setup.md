@@ -4,9 +4,10 @@ First Worker Node:  192.168.1.174 – k8sworker1.example.net
 Second Worker Node:  192.168.1.175 – k8sworker2.example.net
 
 ## master node
+ ```
  sudo hostnamectl set-hostname "k8smaster.example.net"
  exec bash
-
+ ```
 ## worker node
  sudo hostnamectl set-hostname "k8sworker1.example.net"   // 1st worker node
  sudo hostnamectl set-hostname "k8sworker2.example.net"   // 2nd worker node
@@ -20,7 +21,7 @@ sudo vi /etc/hosts (làm = tay, thêm dòng)
 192.168.1.175   k8sworker2.example.net k8sworker2
 
  sudo swapoff -a
- sudo sed -i '/ swap / s/^\(.*\)/#\1/g' /etc/fstab
+ sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
  sudo tee /etc/modules-load.d/containerd.conf <<EOF
 overlay
