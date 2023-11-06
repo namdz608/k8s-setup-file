@@ -15,10 +15,15 @@
 
 ## both node
 
-sudo vi /etc/hosts (làm = tay, thêm dòng)
-192.168.1.173   k8smaster.example.net k8smaster
-192.168.1.174   k8sworker1.example.net k8sworker1
-192.168.1.175   k8sworker2.example.net k8sworker2
+```
+sudo vi /etc/hosts 
+```
+
+- 192.168.1.173   k8smaster.example.net k8smaster
+- 192.168.1.174   k8sworker1.example.net k8sworker1
+- 192.168.1.175   k8sworker2.example.net k8sworker2
+
+![image](https://github.com/namdz608/k8s-setup-file/assets/72740871/f60a09a0-1f56-4b6b-a009-0fce26856cba)
 
 ```
  sudo swapoff -a
