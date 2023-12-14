@@ -121,7 +121,7 @@ kubectl get nodes
 //Install Calico Network Plugin
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 ```
 ![Alt text](image-2.png)
 
