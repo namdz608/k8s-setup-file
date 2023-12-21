@@ -100,7 +100,9 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 // tạo lại token thì làm lại 3 bước trên
 ```
+```
 sudo kubeadm token create --print-join-command
+```
 //copy sang worker
 
 //Test Cluster
@@ -121,7 +123,7 @@ kubectl get nodes
 //Install Calico Network Plugin
 
 ```
-kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
 ```
 ![Alt text](image-2.png)
 
