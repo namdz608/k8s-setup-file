@@ -165,5 +165,5 @@ sudo rm -rf /var/lib/kubelet
 ```
 sudo iptables -t filter -F
 sudo iptables -t filter -X
-systemctl restart docker
+sudo systemctl restart docker
 ```
