@@ -156,9 +156,18 @@ sudo apt-get autoremove
 
 ```
 sudo rm -rf ~/.kube
+```
+
+```
 sudo rm -rf /etc/cni
+```
+```
 sudo rm -rf /etc/kubernetes
+```
+```
 sudo rm -rf /var/lib/etcd
+```
+```
 sudo rm -rf /var/lib/kubelet
 ```
 
