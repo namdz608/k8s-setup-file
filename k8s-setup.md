@@ -28,9 +28,25 @@ sudo vi /etc/hosts
 ![image](https://github.com/namdz608/k8s-setup-file/assets/72740871/f60a09a0-1f56-4b6b-a009-0fce26856cba)
 
 ```
- sudo swapoff -a
- sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+printf "overlay\nbr_netfilter\n" >> /etc/modules-load.d/containerd.conf
+modprobe overlay
+modprobe br_netfilter
 ```
+
+```
+printf "net.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.bridge.bridge-nf-call-ip6tables = 1\n" >> /etc/sysctl.d/99-kubernetes-cri.conf
+```
+
+```
+sudo sysctl --system
+```
+
+```
+wget https://github.com/containerd/containerd/releases/download/v1.7.13/containerd-1.7.13-linux-amd64.tar.gz -P /tmp/
+tar Cxzvf /usr/local /tmp/containerd-1.7.13-linux-amd64.tar.gz
+```
+
+
 
 ```
 sudo tee /etc/modules-load.d/containerd.conf <<EOF
@@ -52,10 +68,6 @@ net.ipv4.ip_forward = 1
 EOF
 ```
 
-```
- sudo sysctl --system
- sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
-```
 ```
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
