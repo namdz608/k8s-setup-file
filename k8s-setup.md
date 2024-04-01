@@ -124,26 +124,27 @@ kubectl cluster-info
 kubectl get nodes
 ```
 
-![Alt text](image.png)
-
-kubectl get nodes
-
-![Alt text](image-1.png)
-
 //Install Calico Network Plugin
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/tigera-operator.yaml
+wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/custom-resources.yaml
 ```
-![Alt text](image-2.png)
 
+Custom custom-resource.yaml ==>> fix cidr: theo ip mang ma kubeadm init --pod-network-cidr 10.10.0.0/16
+```
+vi custom-resources.yaml
+```
+
+```
+kubectl apply -f custom-resources.yaml
+```
+```
 kubectl get pods -n kube-system
-
-![Alt text](image-3.png)
+```
 
 kubectl get nodes
 
-![Alt text](image-4.png)
 
 install helm chart
 ```
