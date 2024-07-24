@@ -28,13 +28,25 @@ sudo vi /etc/hosts
 ![image](https://github.com/namdz608/k8s-setup-file/assets/72740871/f60a09a0-1f56-4b6b-a009-0fce26856cba)
 
 ```
-printf "overlay\nbr_netfilter\n" >> /etc/modules-load.d/containerd.conf
-modprobe overlay
-modprobe br_netfilter
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 ```
 
 ```
-printf "net.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.bridge.bridge-nf-call-ip6tables = 1\n" >> /etc/sysctl.d/99-kubernetes-cri.conf
+sudo tee /etc/modules-load.d/containerd.conf <<EOF
+overlay
+br_netfilter
+EOF
+sudo modprobe overlay
+sudo modprobe br_netfilter
+```
+
+```
+sudo tee /etc/sysctl.d/kubernetes.conf <<EOT
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOT
 ```
 
 ```
@@ -42,75 +54,54 @@ sudo sysctl --system
 ```
 
 ```
-wget https://github.com/containerd/containerd/releases/download/v1.7.13/containerd-1.7.13-linux-amd64.tar.gz -P /tmp/
-tar Cxzvf /usr/local /tmp/containerd-1.7.13-linux-amd64.tar.gz
+sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
 ```
 
 ```
-wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service -P /etc/systemd/system/
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 ```
 
 ```
-systemctl daemon-reload
-systemctl enable --now containerd
+sudo apt update
+sudo apt install -y containerd.io
 ```
 
 ```
-wget https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64 -P /tmp/
-install -m 755 /tmp/runc.amd64 /usr/local/sbin/runc
+containerd config default | sudo tee /etc/containerd/config.toml >/dev/null 2>&1
+sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
 ```
 
 ```
-wget https://github.com/containernetworking/plugins/releases/download/v1.4.0/cni-plugins-linux-amd64-v1.4.0.tgz -P /tmp/
-mkdir -p /opt/cni/bin
-tar Cxzvf /opt/cni/bin /tmp/cni-plugins-linux-amd64-v1.4.0.tgz
+sudo systemctl restart containerd
+$ sudo systemctl enable containerd
 ```
 
 ```
-mkdir -p /etc/containerd
-containerd config default | tee /etc/containerd/config.toml
-```
-
-Tim va sua SystemdCgroup tu false ==> true
-```
-vi /etc/containerd/config.toml
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 ```
 
 ```
-systemctl restart containerd
-sudo swapoff -a
-sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
 ```
-apt-get install -y apt-transport-https ca-certificates curl gpg
-mkdir -p -m 755 /etc/apt/keyrings
-```
-
-```
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-```
-
-```
-apt-get update
-```
-```
-apt-get install -y kubelet=1.29.1-1.1 kubeadm=1.29.1-1.1 kubectl=1.29.1-1.1
-apt-mark hold kubelet kubeadm kubectl
+sudo apt update
+$ sudo apt install -y kubelet kubeadm kubectl
+$ sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
 ## master
 ```
-kubeadm init --pod-network-cidr 10.10.0.0/16 --kubernetes-version 1.29.1 --node-name k8s-control
+sudo kubeadm init --control-plane-endpoint k8smaster.example.net
 ```
 
 ```
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
-// tạo lại token thì làm lại 3 bước trên
 ```
+
 ```
 sudo kubeadm token create --print-join-command
 ```
@@ -128,18 +119,9 @@ kubectl get nodes
 //Install Calico Network Plugin
 
 ```
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/tigera-operator.yaml
-wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/custom-resources.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/master/manifests/calico.yaml
 ```
 
-Custom custom-resource.yaml ==>> fix cidr: theo ip mang ma kubeadm init --pod-network-cidr 10.10.0.0/16
-```
-vi custom-resources.yaml
-```
-
-```
-kubectl apply -f custom-resources.yaml
-```
 ```
 kubectl get pods -n kube-system
 ```
