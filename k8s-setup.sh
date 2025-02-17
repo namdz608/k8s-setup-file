@@ -52,6 +52,5 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 sudo systemctl enable kubelet
 
-sudo kubeadm config images pull
 
 
