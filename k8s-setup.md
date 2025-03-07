@@ -93,7 +93,7 @@ $ sudo apt-mark hold kubelet kubeadm kubectl
 
 ## master
 ```
-sudo kubeadm init --control-plane-endpoint=k8smaster.example.net
+sudo kubeadm init --control-plane-endpoint=k8smaster.example.net --upload-certs
 ```
 
 ```
